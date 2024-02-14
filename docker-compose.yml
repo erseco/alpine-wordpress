@@ -30,8 +30,8 @@ services:
       - WP_DEBUG=false
       - WP_THEME=
       - WP_PLUGINS=
-      - WP_SITE_TITLE="WordPress Site"
-      - WP_SITE_DESCRIPTION="Just another WordPress site"
+      - WP_SITE_TITLE=WordPress Site
+      - WP_SITE_DESCRIPTION=Just another WordPress site
       - WP_SITE_URL=http://localhost:8080
 
     ports:

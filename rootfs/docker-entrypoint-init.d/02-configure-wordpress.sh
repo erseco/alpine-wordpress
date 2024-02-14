@@ -40,15 +40,6 @@ wp config set WP_DEBUG $WP_DEBUG --raw
 wp option update blogname "${WP_SITE_TITLE}" --path="$wp_root"
 wp option update blogdescription "${WP_SITE_DESCRIPTION}" --path="$wp_root"
 
-if [ "$WP_LANGUAGE" != "en_US" ]; then
-
-    # Install the specified language package
-    wp language core install "$WP_LANGUAGE"
-    # Switch the site language to the specified language
-    wp site switch-language "$WP_LANGUAGE"
-
-fi
-
 # Install and activate theme if WP_THEME is specified
 if [ -n "$WP_THEME" ]; then
     wp theme install "$WP_THEME" --activate --path="$wp_root"
@@ -62,6 +53,15 @@ if [ -n "$WP_PLUGINS" ]; then
         wp plugin install "$plugin" --activate --path="$wp_root"
     done
     IFS="$OLD_IFS"
+fi
+
+if [ "$WP_LANGUAGE" != "en_US" ]; then
+
+    # Install the specified language package
+    wp language core install "$WP_LANGUAGE"
+    # Switch the site language to the specified language
+    wp site switch-language "$WP_LANGUAGE"
+
 fi
 
 echo "WordPress has been successfully configured."
