@@ -19,26 +19,31 @@ jobs:
           GHCR_IMAGE=ghcr.io/${GITHUB_REPOSITORY}
           DOCKER_PLATFORMS=linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386,linux/ppc64le,linux/s390x
 
-          VERSION=$(echo ${GITHUB_REF#refs/*/} | sed 's/\//-/g') # Replace / with - in tag name
+          # Determine VERSION based on GITHUB_REF
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=$(echo ${GITHUB_REF#refs/tags/} | sed 's/\//-/g') # Extract tag name and replace / with -
+          else
+            VERSION="latest" # Use 'latest' as the default version
+          fi
+
           TAGS="${GITHUB_REPOSITORY}:${VERSION}"
 
+          # Additional tag for latest on tag push
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             TAGS="$TAGS,${GITHUB_REPOSITORY}:latest"
-          elif [[ $VERSION == "master" ]]; then
-            TAGS="$TAGS,${GITHUB_REPOSITORY}:beta"
           fi
 
           GHCR_TAGS="${GHCR_IMAGE}:${VERSION}"
+
+          # Additional GHCR tag for latest on tag push
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             GHCR_TAGS="$GHCR_TAGS,${GHCR_IMAGE}:latest"
-          elif [[ $VERSION == "master" ]]; then
-            GHCR_TAGS="$GHCR_TAGS,${GHCR_IMAGE}:beta"
           fi
 
           echo "platforms=${DOCKER_PLATFORMS}" >> $GITHUB_OUTPUT
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "ghcr-tags=${GHCR_TAGS}" >> $GITHUB_OUTPUT
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "wp-version=${VERSION}" >> $GITHUB_OUTPUT
 
       # Step 3: Set up QEMU for multi-platform builds
       - name: Set up QEMU
@@ -85,7 +90,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prepare.outputs.tags }}
           platforms: ${{ steps.prepare.outputs.platforms }}
-          build-args: WORDPRESS_VERSION=${{ steps.prepare.outputs.version }}
+          build-args: WORDPRESS_VERSION=${{ steps.prepare.outputs.wp-version }}
 
       # Step 9: Push to GitHub Container Registry
       - name: Push to GHCR
@@ -96,7 +101,7 @@ jobs:
           push: true
           tags: ${{ steps.prepare.outputs.ghcr-tags }}
           platforms: ${{ steps.prepare.outputs.platforms }}
-          build-args: WORDPRESS_VERSION=${{ steps.prepare.outputs.version }}
+          build-args: WORDPRESS_VERSION=${{ steps.prepare.outputs.wp-version }}
 
       # Step 10: Update Docker Hub Description
       - name: Docker Hub Description
