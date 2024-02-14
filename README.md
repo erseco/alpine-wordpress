@@ -55,7 +55,7 @@ Define the ENV variables in docker-compose.yml file
 | DB_PORT              | 3306                    | MySQL default port                               |
 | DB_NAME              | wordpress               | Database name                                    |
 | DB_USER              | wordpress               | Database user                                    |
-| DB_PASS              | wordpress               | Database password                                |
+| DB_PASSWORD          | wordpress               | Database password                                |
 | DB_PREFIX            | wp_                     | Database prefix for WordPress tables             |
 | WP_ADMIN_EMAIL       | admin@example.com       | WordPress admin email                            |
 | WP_ADMIN_USERNAME    | admin                   | WordPress admin username                         |
