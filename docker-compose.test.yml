@@ -7,7 +7,7 @@ services:
     depends_on:
       - postgres
 
-  postgres:
+  mariadb:
     image: mariadb:latest
     environment:
       - MYSQL_ROOT_PASSWORD=wordpress
