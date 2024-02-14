@@ -12,4 +12,4 @@ echo "WordPress is ready"
 # Give it another 3 seconds.
 sleep 3;
 
-curl --silent --fail http://app:8080 | grep '<title>WordPress Site</title>'
+curl --silent --fail http://app:8080 | grep '<title>&quot;WordPress Site&quot; &#8211; &quot;Just another WordPress site&quot;</title>'

@@ -37,8 +37,8 @@ fi
 # Configure site settings
 wp config set WP_DEBUG $WP_DEBUG --raw
 
-wp option update blogname "$WP_SITE_TITLE" --path="$wp_root"
-wp option update blogdescription "$WP_SITE_DESCRIPTION" --path="$wp_root"
+wp option update blogname "${WP_SITE_TITLE}" --path="$wp_root"
+wp option update blogdescription "${WP_SITE_DESCRIPTION}" --path="$wp_root"
 
 if [ "$WP_LANGUAGE" != "en_US" ]; then
 
