@@ -1,0 +1,26 @@
+version: '3.5'
+services:
+  app:
+    build: .
+    environment:
+      - SITE_URL=http://app:8080
+    depends_on:
+      - postgres
+
+  postgres:
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=wordpress
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=wordpress
+
+  sut:
+    image: alpine:latest
+    depends_on:
+      - app
+    environment:
+      - SOURCE_BRANCH
+    command: /tmp/run_tests.sh
+    volumes:
+      - "./run_tests.sh:/tmp/run_tests.sh:ro"
