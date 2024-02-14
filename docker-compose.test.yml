@@ -5,7 +5,7 @@ services:
     environment:
       - SITE_URL=http://app:8080
     depends_on:
-      - postgres
+      - mariadb
 
   mariadb:
     image: mariadb:latest
