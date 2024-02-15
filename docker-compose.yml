@@ -17,22 +17,26 @@ services:
     build: .
     restart: unless-stopped
     environment:
-      - WP_LANGUAGE=en_US
-      - DB_HOST=mariadb
-      - DB_PORT=3306
-      - DB_NAME=wordpress
-      - DB_USER=wordpress
-      - DB_PASSWORD=wordpress
-      - DB_PREFIX=wp_
-      - WP_ADMIN_EMAIL=admin@example.com
-      - WP_ADMIN_USERNAME=admin
-      - WP_ADMIN_PASSWORD=PLEASE_CHANGEME
-      - WP_DEBUG=false
-      - WP_THEME=
-      - WP_PLUGINS=
-      - WP_SITE_TITLE=WordPress Site
-      - WP_SITE_DESCRIPTION=Just another WordPress site
-      - WP_SITE_URL=http://localhost:8080
+      WP_LANGUAGE: en_US
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: wordpress
+      DB_USER: wordpress
+      DB_PASSWORD: wordpress
+      DB_PREFIX: wp_
+      WP_ADMIN_EMAIL: admin@example.com
+      WP_ADMIN_USERNAME: admin
+      WP_ADMIN_PASSWORD: PLEASE_CHANGEME
+      WP_DEBUG: false
+      WP_THEME: 
+      WP_PLUGINS: 
+      WP_SITE_TITLE: WordPress Site
+      WP_SITE_DESCRIPTION: Just another WordPress site
+      WP_SITE_URL: http://localhost:8080
+      PRE_CONFIGURE_COMMANDS:
+      POST_CONFIGURE_COMMANDS: |
+        echo "this is a test line 1"
+        echo "this is a test line 2"
 
     ports:
       - 8080:8080
