@@ -28,5 +28,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git tag $LATEST_WP_VERSION
           git push origin $LATEST_WP_VERSION
-        else
-          echo "Latest version is already tagged."
+        fi
