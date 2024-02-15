@@ -37,7 +37,8 @@ ENV WP_LANGUAGE=en_US \
     client_max_body_size=50M \
     post_max_size=50M \
     upload_max_filesize=50M \
-    max_input_vars=5000 
+    max_input_vars=5000 \
+    zlib_output_compression=Off
 
 # Use WP-CLI to download WordPress, using the version specified or 'latest' by default.
 RUN wp core download --version=${WORDPRESS_VERSION} --path=/var/www/html

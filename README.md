@@ -71,6 +71,7 @@ Define the ENV variables in docker-compose.yml file
 | post_max_size        | 50M                     | Maximum size of POST data that PHP will accept   |
 | upload_max_filesize  | 50M                     | Maximum size of an uploaded file                 |
 | max_input_vars       | 5000                    | Maximum number of input variables for PHP        |
+| zlib_output_compression | Off                  | Disable zlib compresion for PHP                  |
 | PRE_CONFIGURE_COMMANDS |                       | Commands to run before starting the configuration |
 | POST_CONFIGURE_COMMANDS |                      | Commands to run after finished the configuration |
 
