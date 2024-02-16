@@ -45,6 +45,73 @@ In certain situations, you might need to run commands as `root` within your Word
 docker-compose exec --user root wordpress sh
 ```
 
+## WordPress Plugin Development Environment Setup
+
+Below is a `docker-compose.yml` example specifically designed for WordPress plugin development. This configuration provides a comprehensive setup for developing, testing, and deploying WordPress plugins efficiently.
+
+```yaml
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=wordpress
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=wordpress
+    volumes:
+      - mariadb:/var/lib/mysql
+
+  wordpress:
+    image: erseco/alpine-wordpress:latest
+    restart: unless-stopped
+    environment:
+      WP_LANGUAGE: es_ES
+      WP_ADMIN_USERNAME: admin
+      WP_ADMIN_PASSWORD: admin
+      WP_DEBUG: true
+      WP_PLUGINS: user-access-manager
+      WP_SITE_URL: http://localhost:8080
+      POST_CONFIGURE_COMMANDS: |
+        echo "Creating user for testing"
+        if ! wp user get test1 --field=ID --quiet; then
+          wp user create test1 test1@example.com --role=subscriber --user_pass=test1
+        fi
+        echo "Activating plugin"
+        wp plugin activate my-plugin
+    ports:
+      - 8080:8080
+    volumes:
+      - wordpress:/var/www/html
+      - ./my-plugin:/var/www/html/wp-content/plugins/my-plugin
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb: null
+  wordpress: null
+```
+
+- **MariaDB service**: Configures a MariaDB database with WordPress-specific settings, ensuring data persistence through Docker volumes.
+- **WordPress service**:
+  - Uses `erseco/alpine-wordpress:latest`, tailored for WordPress development.
+  - Sets up WordPress with Spanish language, admin credentials, and enables debugging.
+  - Pre-installs and activates specified plugins, including a custom plugin located in `./my-plugin`.
+  - Executes custom commands after configuration, like creating a test user and activating the developed plugin.
+  - Maps port 8080, allowing local access to the WordPress site.
+  - Depends on the `mariadb` service for database connectivity.
+
+### How to Use
+
+1. Save the provided `docker-compose.yml` in your project directory.
+2. Place your plugin code inside a directory named `my-plugin` in the same location.
+3. Execute `docker-compose up -d` in your terminal, within the project directory.
+4. Access your WordPress site at `http://localhost:8080` to test and develop your plugin in a real-world environment.
+
+This setup streamlines the plugin development process, from coding and testing to deployment, within a controlled and consistent environment.
+
 ## Configuration
 Define the ENV variables in docker-compose.yml file
 
