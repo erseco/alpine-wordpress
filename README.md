@@ -67,6 +67,10 @@ services:
   wordpress:
     image: erseco/alpine-wordpress:latest
     restart: unless-stopped
+    depends_on:
+      - mariadb
+    ports:
+      - 8080:8080      
     environment:
       WP_LANGUAGE: es_ES
       WP_ADMIN_USERNAME: admin
@@ -81,13 +85,9 @@ services:
         fi
         echo "Activating plugin"
         wp plugin activate my-plugin
-    ports:
-      - 8080:8080
     volumes:
       - wordpress:/var/www/html
       - ./my-plugin:/var/www/html/wp-content/plugins/my-plugin
-    depends_on:
-      - mariadb
 
 volumes:
   mariadb: null
