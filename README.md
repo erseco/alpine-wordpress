@@ -70,7 +70,7 @@ services:
     environment:
       WP_LANGUAGE: es_ES
       WP_ADMIN_USERNAME: admin
-      WP_ADMIN_PASSWORD: admin
+      WP_ADMIN_PASSWORD: PLEASE_CHANGEME
       WP_DEBUG: true
       WP_PLUGINS: user-access-manager
       WP_SITE_URL: http://localhost:8080

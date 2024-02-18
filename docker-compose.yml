@@ -16,6 +16,10 @@ services:
     image: erseco/alpine-wordpress
     build: .
     restart: unless-stopped
+    depends_on:
+      - mariadb    
+    ports:
+      - 8080:8080    
     environment:
       WP_LANGUAGE: en_US
       DB_HOST: mariadb
@@ -37,13 +41,8 @@ services:
       POST_CONFIGURE_COMMANDS: |
         echo "this is a test line 1"
         echo "this is a test line 2"
-
-    ports:
-      - 8080:8080
     volumes:
       - wordpress:/var/www/html
-    depends_on:
-      - mariadb
 
 volumes:
   mariadb: null
