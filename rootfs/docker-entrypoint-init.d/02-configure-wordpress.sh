@@ -40,6 +40,15 @@ if ! wp core is-installed --path="$wp_root"; then
     wp core install --url="$WP_SITE_URL" --title="$WP_SITE_TITLE" --admin_user="$WP_ADMIN_USERNAME" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --path="$wp_root"
 fi
 
+# Check if HTTPS detection snippet is already in wp-config.php, add if not
+if ! grep -q "HTTP_X_FORWARDED_PROTO" "$wp_root/wp-config.php"; then
+    echo "Adding HTTPS detection snippet to wp-config.php..."
+    sed -i "1 a\\
+if (strpos(\$_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false)\\
+       \$_SERVER['HTTPS']='on';\\
+" "$wp_root/wp-config.php"
+fi
+
 # Configure site settings
 wp config set WP_DEBUG $WP_DEBUG --raw
 
