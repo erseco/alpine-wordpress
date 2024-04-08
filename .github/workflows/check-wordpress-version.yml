@@ -3,6 +3,7 @@ name: Check WordPress Version and Tag
 on:
   schedule:
     - cron: '0 0 * * *' # Runs this task daily at midnight
+  workflow_dispatch: # Allows manually triggering
 
 jobs:
   check-version-and-tag:
