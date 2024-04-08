@@ -25,7 +25,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         LATEST_WP_VERSION: ${{ env.LATEST_WP_VERSION }}
-        GH_PATH: ${{ secrets.GH_PATH }}
+        GH_PAT: ${{ secrets.GH_PAT }}
       run: |
         CURRENT_VERSION=$(git tag --sort=-v:refname | head -n 1)
         echo "Latest WP Version from API: $LATEST_WP_VERSION"
@@ -38,7 +38,7 @@ jobs:
           git push origin $LATEST_WP_VERSION
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token $GH_PATH" \
+            -H "Authorization: token $GH_PAT" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/build.yml/dispatches \
             -d '{"ref":"refs/tags/'"$LATEST_WP_VERSION"'"}'
         else
