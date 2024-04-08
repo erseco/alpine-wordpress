@@ -36,6 +36,23 @@ jobs:
           git config --local user.name "GitHub Action"
           git tag $LATEST_WP_VERSION
           git push origin $LATEST_WP_VERSION
+          echo "::set-output name=tag_created::true"
         else
           echo "Latest version is already tagged."
+          echo "::set-output name=tag_created::false"
         fi
+      outputs:
+        tag_created: ${{ steps.tag_condition.outputs.tag_created }} # Asegura que el nombre del paso coincida
+
+
+    - name: Trigger Build Workflow
+      needs: check-version-and-tag
+      if: ${{ needs.check-version-and-tag.outputs.tag_created == 'true' }}
+      run: |
+        curl -X POST \
+        -H "Accept: application/vnd.github.v3+json" \
+        -H "Authorization: token ${{ secrets.GH_PAT }}" \
+        https://api.github.com/repos/${{ github.repository }}/actions/workflows/build.yml/dispatches \
+        -d '{"ref":"refs/tags/<tu_tag>"}'
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
