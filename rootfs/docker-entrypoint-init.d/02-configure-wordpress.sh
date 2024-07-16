@@ -13,7 +13,7 @@ check_db_availability() {
     local db_port="$2"
 
     echo "Waiting for $db_host:$db_port to be ready..."
-    while ! nc -w 1 "$db_host" "$db_port"; do
+    while ! nc -w 1 "$db_host" "$db_port" > /dev/null 2>&1; do
         # Show some progress
         echo -n '.'
         sleep 1
@@ -44,13 +44,13 @@ fi
 if ! grep -q "HTTP_X_FORWARDED_PROTO" "$wp_root/wp-config.php"; then
     echo "Adding HTTPS detection snippet to wp-config.php..."
     sed -i "1 a\\
-if (strpos(\$_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false)\\
+if (isset(\$_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos(\$_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false)\\
        \$_SERVER['HTTPS']='on';\\
 " "$wp_root/wp-config.php"
 fi
 
 # Configure site settings
-wp config set WP_DEBUG $WP_DEBUG --raw
+wp config set WP_DEBUG "$WP_DEBUG" --raw
 
 wp option update blogname "${WP_SITE_TITLE}" --path="$wp_root"
 wp option update blogdescription "${WP_SITE_DESCRIPTION}" --path="$wp_root"

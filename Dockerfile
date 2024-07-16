@@ -41,4 +41,4 @@ ENV WP_LANGUAGE=en_US \
     zlib_output_compression=Off
 
 # Use WP-CLI to download WordPress, using the version specified or 'latest' by default.
-RUN wp core download --version=${WORDPRESS_VERSION} --path=/var/www/html
+RUN wp core download --version=${WORDPRESS_VERSION} --path=/var/www/html 2> /dev/null
