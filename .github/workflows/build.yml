@@ -22,9 +22,12 @@ jobs:
 
           # Determine VERSION based on GITHUB_REF
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=$(echo ${GITHUB_REF#refs/tags/} | sed 's/\//-/g') # Extract tag name and replace / with -
+            FULL_VERSION=${GITHUB_REF#refs/tags/} # Extract full tag name
+            VERSION=$(echo $FULL_VERSION | sed 's/\//-/g') # Extract tag name and replace / with -
+            WP_VERSION=$(echo $FULL_VERSION | cut -d'-' -f1) # Extract main version part for WordPress
           else
             VERSION="latest" # Use 'latest' as the default version
+            WP_VERSION="latest"
           fi
 
           TAGS="${GITHUB_REPOSITORY}:${VERSION}"
@@ -44,7 +47,7 @@ jobs:
           echo "platforms=${DOCKER_PLATFORMS}" >> $GITHUB_OUTPUT
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "ghcr-tags=${GHCR_TAGS}" >> $GITHUB_OUTPUT
-          echo "wp-version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "wp-version=${WP_VERSION}" >> $GITHUB_OUTPUT
 
       # Step 3: Set up QEMU for multi-platform builds
       - name: Set up QEMU
