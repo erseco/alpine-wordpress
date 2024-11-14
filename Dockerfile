@@ -12,7 +12,7 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
 
-RUN apk add bash svn
+RUN apk add bash subversion
 
 # Add phpunit
 RUN apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community phpunit
