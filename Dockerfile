@@ -12,6 +12,9 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
 
+# Add phpunit
+RUN apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community phpunit
+
 USER nobody
 
 # Here we assume that WORDPRESS_VERSION is passed at build time. By default, we use 'latest'.
