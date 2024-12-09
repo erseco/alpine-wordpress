@@ -7,15 +7,11 @@ USER root
 COPY --chown=nobody rootfs/ /
 
 # Install WP-CLI
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+RUN ln -s /usr/bin/php84 /usr/bin/php && \
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     php84 wp-cli.phar --info && \
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
-
-RUN apk add bash subversion
-
-# Add phpunit
-RUN apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community phpunit
 
 USER nobody
 
@@ -46,4 +42,4 @@ ENV WP_LANGUAGE=en_US \
     zlib_output_compression=Off
 
 # Use WP-CLI to download WordPress, using the version specified or 'latest' by default.
-RUN wp core download --version=${WORDPRESS_VERSION} --path=/var/www/html 2> /dev/null
+RUN wp core download --version=${WORDPRESS_VERSION} --path=/var/www/html
