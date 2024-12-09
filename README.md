@@ -13,7 +13,7 @@ Repository: https://github.com/erseco/alpine-wordpress
 
 * Built on the lightweight image https://github.com/erseco/alpine-php-webserver
 * Very small Docker image size (+/-70MB)
-* Uses PHP 8.3 for better performance, lower cpu usage & memory footprint
+* Uses PHP-FPM for better performance, lower cpu usage & memory footprint
 * Multi-arch support: 386, amd64, arm/v6, arm/v7, arm64, ppc64le, s390x
 * Optimized for 1000 concurrent users
 * Optimized to only use resources when there's traffic (by using PHP-FPM's ondemand PM)
