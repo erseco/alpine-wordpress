@@ -7,8 +7,7 @@ USER root
 COPY --chown=nobody rootfs/ /
 
 # Install WP-CLI
-RUN ln -s /usr/bin/php84 /usr/bin/php && \
-    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     php84 wp-cli.phar --info && \
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
