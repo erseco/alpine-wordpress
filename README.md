@@ -30,6 +30,8 @@ Repository: https://github.com/erseco/alpine-wordpress
 
 Each WordPress release is published as `X.Y.Z`. The newest release of each series is also tagged as `X.Y` and `X`,
 and the newest release overall as `latest`, so `7` follows the newest 7.x.y and `7.0` the newest 7.0.x.
+Only the newest release of each series from 6.7 on is rebuilt with security fixes; 6.9 and later run on PHP 8.5 and
+6.7 and 6.8 on PHP 8.3. Older series are no longer maintained.
 Images are available on [Docker Hub](https://hub.docker.com/r/erseco/alpine-wordpress/tags) and
 [GHCR](https://github.com/erseco/alpine-wordpress/pkgs/container/alpine-wordpress).
 

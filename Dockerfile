@@ -1,4 +1,5 @@
-FROM ghcr.io/erseco/alpine-php-webserver:latest
+ARG PHP_BASE=latest
+FROM ghcr.io/erseco/alpine-php-webserver:${PHP_BASE}
 
 LABEL maintainer="Ernesto Serrano <info@ernesto.es>"
 
