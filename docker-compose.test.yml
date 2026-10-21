@@ -8,7 +8,7 @@ services:
       - mariadb
 
   mariadb:
-    image: mirror.gcr.io/library/mariadb:latest
+    image: mariadb:latest
     environment:
       - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
       - MYSQL_ROOT_PASSWORD=wordpress
@@ -17,7 +17,7 @@ services:
       - MYSQL_PASSWORD=wordpress
 
   sut:
-    image: mirror.gcr.io/library/alpine:latest
+    image: alpine:latest
     depends_on:
       - app
     environment:
