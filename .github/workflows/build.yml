@@ -63,6 +63,7 @@ jobs:
           echo "tags=${TAGS%,}" >> $GITHUB_OUTPUT
           echo "ghcr-tags=${GHCR_TAGS%,}" >> $GITHUB_OUTPUT
           echo "wp-version=${WP_VERSION}" >> $GITHUB_OUTPUT
+          echo "php-base=$(sh .github/scripts/tags.sh base "$WP_VERSION")" >> $GITHUB_OUTPUT
 
       # Step 3: Set up QEMU for multi-platform builds
       - name: Set up QEMU
@@ -109,7 +110,9 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prepare.outputs.tags }}
           platforms: ${{ steps.prepare.outputs.platforms }}
-          build-args: WORDPRESS_VERSION=${{ steps.prepare.outputs.wp-version }}
+          build-args: |
+            WORDPRESS_VERSION=${{ steps.prepare.outputs.wp-version }}
+            PHP_BASE=${{ steps.prepare.outputs.php-base }}
 
       # Step 9: Push to GitHub Container Registry
       - name: Push to GHCR
@@ -120,7 +123,9 @@ jobs:
           push: true
           tags: ${{ steps.prepare.outputs.ghcr-tags }}
           platforms: ${{ steps.prepare.outputs.platforms }}
-          build-args: WORDPRESS_VERSION=${{ steps.prepare.outputs.wp-version }}
+          build-args: |
+            WORDPRESS_VERSION=${{ steps.prepare.outputs.wp-version }}
+            PHP_BASE=${{ steps.prepare.outputs.php-base }}
 
       # Step 10: Update Docker Hub Description
       - name: Generate Docker Hub README with the tag list
