@@ -8,49 +8,60 @@ on:
       - '**'
   pull_request:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to (re)build with the current Dockerfile, e.g. 6.9.4 (empty builds latest)'
+        required: false
 
 jobs:
   buildx:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the code
+      # Step 1: Checkout the code (with all tags, used to compute the series aliases)
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Step 1.5: Test the tag helper
+      - name: Test tag helper
+        run: sh .github/scripts/tags_test.sh
 
       # Step 2: Prepare variables for building and tagging the image
       - name: Prepare
         id: prepare
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
           GHCR_IMAGE=ghcr.io/${GITHUB_REPOSITORY}
           DOCKER_PLATFORMS=linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386,linux/ppc64le,linux/s390x
 
-          # Determine VERSION based on GITHUB_REF
+          # Determine VERSION from the pushed tag or the manual input
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            FULL_VERSION=${GITHUB_REF#refs/tags/} # Extract full tag name
-            VERSION=$(echo $FULL_VERSION | sed 's/\//-/g') # Extract tag name and replace / with -
-            WP_VERSION=$(echo $FULL_VERSION | cut -d'-' -f1) # Extract main version part for WordPress
+            VERSION=$(echo "${GITHUB_REF#refs/tags/}" | sed 's/\//-/g') # Extract tag name and replace / with -
           else
-            VERSION="latest" # Use 'latest' as the default version
+            VERSION=$INPUT_VERSION
+          fi
+
+          if [[ -z $VERSION ]]; then
             WP_VERSION="latest"
+            ALIASES="latest"
+          elif [[ $VERSION =~ ^[0-9]+(\.[0-9]+)*(-[0-9]+)?$ ]]; then
+            WP_VERSION=$(echo "$VERSION" | cut -d'-' -f1) # Extract main version part for WordPress
+            # Also tag <minor>, <major> and latest when this is the newest version of that series
+            ALIASES=$(git tag | sh .github/scripts/tags.sh aliases "$VERSION")
+          else
+            echo "Invalid version: $VERSION" >&2
+            exit 1
           fi
 
-          TAGS="${GITHUB_REPOSITORY}:${VERSION}"
-
-          # Additional tag for latest on tag push
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            TAGS="$TAGS,${GITHUB_REPOSITORY}:latest"
-          fi
-
-          GHCR_TAGS="${GHCR_IMAGE}:${VERSION}"
-
-          # Additional GHCR tag for latest on tag push
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            GHCR_TAGS="$GHCR_TAGS,${GHCR_IMAGE}:latest"
-          fi
+          TAGS=$(for a in $ALIASES; do printf '%s,' "${GITHUB_REPOSITORY}:$a"; done)
+          GHCR_TAGS=$(for a in $ALIASES; do printf '%s,' "${GHCR_IMAGE}:$a"; done)
+          echo "Tags: $ALIASES"
 
           echo "platforms=${DOCKER_PLATFORMS}" >> $GITHUB_OUTPUT
-          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
-          echo "ghcr-tags=${GHCR_TAGS}" >> $GITHUB_OUTPUT
+          echo "tags=${TAGS%,}" >> $GITHUB_OUTPUT
+          echo "ghcr-tags=${GHCR_TAGS%,}" >> $GITHUB_OUTPUT
           echo "wp-version=${WP_VERSION}" >> $GITHUB_OUTPUT
 
       # Step 3: Set up QEMU for multi-platform builds
@@ -112,10 +123,19 @@ jobs:
           build-args: WORDPRESS_VERSION=${{ steps.prepare.outputs.wp-version }}
 
       # Step 10: Update Docker Hub Description
+      - name: Generate Docker Hub README with the tag list
+        if: startsWith(github.ref, 'refs/tags/') || inputs.version != ''
+        run: |
+          { sed '/<!-- tags:start -->/q' README.md
+            git tag | sh .github/scripts/tags.sh readme
+            sed -n '/<!-- tags:end -->/,$p' README.md
+          } > dockerhub-README.md
+
       - name: Docker Hub Description
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || inputs.version != ''
         uses: peter-evans/dockerhub-description@v5
         with:
+          readme-filepath: ./dockerhub-README.md
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           short-description: ${{ github.event.repository.description }}

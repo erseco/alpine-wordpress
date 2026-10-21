@@ -36,6 +36,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git tag $LATEST_WP_VERSION
           git push origin $LATEST_WP_VERSION
+          GH_TOKEN=$GITHUB_TOKEN gh release create "$LATEST_WP_VERSION" --title "$LATEST_WP_VERSION" --generate-notes --latest
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token $GH_PAT" \
