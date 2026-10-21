@@ -1,5 +1,4 @@
-ARG ARCH=
-FROM ${ARCH}erseco/alpine-php-webserver:latest
+FROM ghcr.io/erseco/alpine-php-webserver:latest
 
 LABEL maintainer="Ernesto Serrano <info@ernesto.es>"
 

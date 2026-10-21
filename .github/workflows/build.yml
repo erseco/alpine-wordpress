@@ -58,13 +58,15 @@ jobs:
         id: qemu
         uses: docker/setup-qemu-action@v4
         with:
-          image: tonistiigi/binfmt:latest
+          image: mirror.gcr.io/tonistiigi/binfmt:latest
           platforms: all
 
       # Step 4: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
         id: buildx
+        with:
+          driver-opts: image=mirror.gcr.io/moby/buildkit:buildx-stable-1
 
       # Step 5: Login to DockerHub
       - name: Login to DockerHub
