@@ -26,6 +26,17 @@ Repository: https://github.com/erseco/alpine-wordpress
 * The logs of all the services are redirected to the output of the Docker container (visible with `docker logs -f <container name>`)
 * Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
 
+## Tags
+
+Each WordPress release is published as `X.Y.Z`. The newest release of each series is also tagged as `X.Y` and `X`,
+and the newest release overall as `latest`, so `7` follows the newest 7.x.y and `7.0` the newest 7.0.x.
+Images are available on [Docker Hub](https://hub.docker.com/r/erseco/alpine-wordpress/tags) and
+[GHCR](https://github.com/erseco/alpine-wordpress/pkgs/container/alpine-wordpress).
+
+<!-- tags:start -->
+See the [releases](https://github.com/erseco/alpine-wordpress/releases) for the current list.
+<!-- tags:end -->
+
 ## Usage
 
 Start the Docker containers:
