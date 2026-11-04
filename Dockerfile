@@ -6,9 +6,6 @@ LABEL maintainer="Ernesto Serrano <info@ernesto.es>"
 USER root
 COPY --chown=nobody rootfs/ /
 
-# XMLWriter is not in the base image; sabre/dav and other XML writers need it
-RUN apk add --no-cache "php$(php -r 'echo PHP_MAJOR_VERSION, PHP_MINOR_VERSION;')-xmlwriter"
-
 # Install WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     php wp-cli.phar --info && \
